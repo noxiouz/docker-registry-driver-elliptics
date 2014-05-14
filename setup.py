@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __maintainer__ = 'Mangled Deutz'
 __email__ = 'olivier@webitup.fr'
 __status__ = 'Production'
