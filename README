@@ -1,9 +1,22 @@
 # Docker registry elliptics driver
 
-### Elliptics options
+This is a [docker-registry backend driver](https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core) based on the [Elliptics](http://reverbrain.com/elliptics/) key-value storage.
 
-These options configure your [Elliptics](http://reverbrain.com/elliptics/) storage. These are used when `storage` is set
-to `elliptics`.
+[![PyPI version][pypi-image]][pypi-url]
+[![Build Status][travis-image]][travis-url]
+
+## Usage
+
+Assuming you have a working docker-registry.
+
+`pip install docker-registry-driver-elliptics`
+
+Edit your configuration so that `storage` reads `elliptics`.
+
+
+## Options
+
+You may add any of the following to your main docker-registry configuration to further configure it.
 
 1. `elliptics_nodes`: Elliptics remotes
 1. `elliptics_wait_timeout`: time to wait for the operation complete
@@ -17,21 +30,28 @@ to `elliptics`.
 1. `elliptics_addr_family`: address family to use when adding Elliptics remotes (default: `2` (for ipv4)). Use 10 for ipv6 remotes on Linux.
 
 Example:
+
 ```yaml
-dev:
-  storage: elliptics
-  elliptics_nodes:
+storage: elliptics
+elliptics_nodes:
       elliptics-host1: 1025
       elliptics-host2: 1025
       ...
       hostN: port
-  elliptics_wait_timeout: 60
-  elliptics_check_timeout: 60
-  elliptics_io_thread_num: 2
-  elliptics_net_thread_num: 2
-  elliptics_nonblocking_io_thread_num: 2
-  elliptics_groups: [1, 2, 3]
-  elliptics_verbosity: 4
-  elliptics_logfile: "/tmp/logfile.log"
-  elliptics_loglevel: debug
+elliptics_wait_timeout: 60
+elliptics_check_timeout: 60
+elliptics_io_thread_num: 2
+elliptics_net_thread_num: 2
+elliptics_nonblocking_io_thread_num: 2
+elliptics_groups: [1, 2, 3]
+elliptics_verbosity: 4
+elliptics_logfile: "/tmp/logfile.log"
+elliptics_loglevel: debug
 ```
+
+
+[pypi-url]: https://pypi.python.org/pypi/docker-registry-driver-elliptics
+[pypi-image]: https://badge.fury.io/py/docker-registry-driver-elliptics.svg
+
+[travis-url]: http://travis-ci.org/dmp42/docker-registry-driver-elliptics
+[travis-image]: https://secure.travis-ci.org/dmp42/docker-registry-driver-elliptics.png?branch=master
