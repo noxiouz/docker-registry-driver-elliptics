@@ -18,7 +18,8 @@ import logging
 
 
 def import_non_local(name, custom_name=None):
-    import imp, sys
+    import imp
+    import sys
 
     custom_name = custom_name or name
 
@@ -67,7 +68,8 @@ class Storage(driver.Base):
         logger.info("Using namespace %s", self.namespace)
 
         at_least_one = False
-        for host, port in config.get('elliptics_nodes', {'localhost': 1025}).iteritems():
+        for host, port in config.get(
+                'elliptics_nodes', {'localhost': 1025}).iteritems():
             try:
                 self._elliptics_node.add_remote(host, port,
                                                 config.get(
@@ -117,7 +119,7 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise exceptions.FileNotFoundError("No such file %s" % key)
+            raise exceptions.FileNotFoundError("No such file %s" % path)
 
         res = r.get()[0]
         return str(res.data)
@@ -141,7 +143,7 @@ class Storage(driver.Base):
     def get_content(self, path):
         try:
             return self.s_read(path)
-        except Exception as err:
+        except Exception:
             raise exceptions.FileNotFoundError("File not found %s" % path)
 
     @lru.set
@@ -178,7 +180,8 @@ class Storage(driver.Base):
             path = ""
 
         if not self.exists(path) and path:
-            raise exceptions.FileNotFoundError('No such directory: \'{0}\''.format(path))
+            raise exceptions.FileNotFoundError(
+                'No such directory: \'{0}\''.format(path))
 
         for item in self.s_find(('docker', path)):
             yield item

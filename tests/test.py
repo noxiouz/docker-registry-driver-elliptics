@@ -2,20 +2,18 @@
 
 import logging
 
-from docker_registry.testing import Driver
-from docker_registry.testing import Query
-from docker_registry.testing.utils import Config
+from docker_registry import testing
 
 logger = logging.getLogger(__name__)
 
 
-class TestQuery(Query):
+class TestQuery(testing.Query):
     def __init__(self):
         self.scheme = 'elliptics'
 
 
-class TestDriver(Driver):
+class TestDriver(testing.Driver):
     def __init__(self):
         self.scheme = 'elliptics'
         self.path = ''
-        self.config = Config({})
+        self.config = testing.Config({})
