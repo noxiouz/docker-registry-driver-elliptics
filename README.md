@@ -49,6 +49,39 @@ elliptics_logfile: "/tmp/logfile.log"
 elliptics_loglevel: debug
 ```
 
+## Developer setup
+
+Clone this.
+
+Install elliptics:
+
+```
+sudo apt-get install curl
+curl http://repo.reverbrain.com/REVERBRAIN.GPG | sudo apt-key add -
+sudo echo "deb http://repo.reverbrain.com/precise/ current/amd64/" | sudo tee -a /etc/apt/sources.list
+sudo echo "deb http://repo.reverbrain.com/precise/ current/all/" | sudo tee -a /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install elliptics
+```
+
+Get your python ready:
+
+```
+sudo apt-get install python-pip
+sudo pip install tox
+```
+
+Start the test elliptics:
+
+```
+cd fixtures
+sudo ./start.sh
+```
+
+You are ready to hack.
+In order to verify what you did is ok, just run `tox`.
+
+This will run the tests provided by [`docker-registry-core`](https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core)
 
 [pypi-url]: https://pypi.python.org/pypi/docker-registry-driver-elliptics
 [pypi-image]: https://badge.fury.io/py/docker-registry-driver-elliptics.svg
