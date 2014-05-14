@@ -1,1 +1,37 @@
-Docker registry elliptics driver
+# Docker registry elliptics driver
+
+### Elliptics options
+
+These options configure your [Elliptics](http://reverbrain.com/elliptics/) storage. These are used when `storage` is set
+to `elliptics`.
+
+1. `elliptics_nodes`: Elliptics remotes
+1. `elliptics_wait_timeout`: time to wait for the operation complete
+1. `elliptics_check_timeout`: timeout for pinging node
+1. `elliptics_io_thread_num`: number of IO threads in processing pool
+1. `elliptics_net_thread_num`: number of threads in network processing pool
+1. `elliptics_nonblocking_io_thread_num`: number of IO threads in processing pool dedicated to nonblocking ops
+1. `elliptics_groups`: Elliptics groups registry should use
+1. `elliptics_verbosity`: Elliptics logger verbosity (0...4)
+1. `elliptics_logfile`: path to Elliptics logfile (default: `dev/stderr`)
+1. `elliptics_addr_family`: address family to use when adding Elliptics remotes (default: `2` (for ipv4)). Use 10 for ipv6 remotes on Linux.
+
+Example:
+```yaml
+dev:
+  storage: elliptics
+  elliptics_nodes:
+      elliptics-host1: 1025
+      elliptics-host2: 1025
+      ...
+      hostN: port
+  elliptics_wait_timeout: 60
+  elliptics_check_timeout: 60
+  elliptics_io_thread_num: 2
+  elliptics_net_thread_num: 2
+  elliptics_nonblocking_io_thread_num: 2
+  elliptics_groups: [1, 2, 3]
+  elliptics_verbosity: 4
+  elliptics_logfile: "/tmp/logfile.log"
+  elliptics_loglevel: debug
+```
