@@ -19,8 +19,8 @@ before_install:
   - cd fixtures && sudo ./start.sh && cd -
 
 install:
-  - pip install -rrequirements.txt
   - pip install -rtests/requirements.txt
-  - pip install .
+  # - pip install -rrequirements.txt
+  # - pip install .
 
 script: python setup.py nosetests
