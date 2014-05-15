@@ -1,11 +1,14 @@
 language: python
 # Only python 27 is working for now
 python:
-  - "2.6"
+  # - "2.6"
   - "2.7"
-  - "3.2"
-  - "3.3"
-  - "3.4"
+  # - "3.2"
+  # - "3.3"
+  # - "3.4"
+
+virtualenv:
+  system_site_packages: true
 
 before_install:
   - curl http://repo.reverbrain.com/REVERBRAIN.GPG | sudo apt-key add -
@@ -16,8 +19,7 @@ before_install:
   - cd fixtures && sudo ./start.sh && cd -
 
 install:
-  # - pip install -rrequirements.txt
-  - pip install "docker-registry-core>=1,<2"
+  - pip install -rrequirements.txt
   - pip install -rtests/requirements.txt
   - pip install .
 
