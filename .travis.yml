@@ -13,7 +13,7 @@ before_install:
   - echo "deb http://repo.reverbrain.com/precise/ current/all/" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
   - sudo apt-get install elliptics
-  - cd fixtures && sudo ./start.sh
+  - cd fixtures && sudo ./start.sh && cd -
 
 install:
   - pip install -rrequirements.txt
