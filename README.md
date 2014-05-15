@@ -7,7 +7,7 @@ This is a [docker-registry backend driver](https://github.com/dotcloud/docker-re
 
 ## Usage
 
-Assuming you have a working docker-registry.
+Assuming you have a working docker-registry and elliptics setup.
 
 `pip install docker-registry-driver-elliptics`
 
@@ -82,6 +82,12 @@ You are ready to hack.
 In order to verify what you did is ok, just run `tox`.
 
 This will run the tests provided by [`docker-registry-core`](https://github.com/dotcloud/docker-registry/tree/master/depends/docker-registry-core)
+
+
+## License
+
+This is licensed under the Apache license.
+Most of the code here comes from docker-registry, under an Apache license as well.
 
 [pypi-url]: https://pypi.python.org/pypi/docker-registry-driver-elliptics
 [pypi-image]: https://badge.fury.io/py/docker-registry-driver-elliptics.svg
