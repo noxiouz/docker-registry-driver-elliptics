@@ -92,5 +92,5 @@ Most of the code here comes from docker-registry, under an Apache license as wel
 [pypi-url]: https://pypi.python.org/pypi/docker-registry-driver-elliptics
 [pypi-image]: https://badge.fury.io/py/docker-registry-driver-elliptics.svg
 
-[travis-url]: http://travis-ci.org/dmp42/docker-registry-driver-elliptics
-[travis-image]: https://secure.travis-ci.org/dmp42/docker-registry-driver-elliptics.png?branch=master
+[travis-url]: http://travis-ci.org/noxiouz/docker-registry-driver-elliptics
+[travis-image]: https://secure.travis-ci.org/noxiouz/docker-registry-driver-elliptics.png?branch=master

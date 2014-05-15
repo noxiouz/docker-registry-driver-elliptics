@@ -20,9 +20,9 @@ __status__ = 'Production'
 __title__ = 'docker-registry-driver-elliptics'
 __build__ = 0x000000
 
-__url__ = 'https://github.com/dmp42/docker-registry-driver-elliptics'
+__url__ = 'https://github.com/noxiouz/docker-registry-driver-elliptics'
 __description__ = 'Docker registry elliptics driver'
-d = 'https://github.com/dmp42/docker-registry-driver-elliptics/archive/\
+d = 'https://github.com/noxiouz/docker-registry-driver-elliptics/archive/\
 master.zip'
 
 setuptools.setup(
