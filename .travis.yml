@@ -21,6 +21,6 @@ before_install:
 install:
   - pip install -rtests/requirements.txt
   # - pip install -rrequirements.txt
-  # - pip install .
+  - pip install .
 
 script: python setup.py nosetests
