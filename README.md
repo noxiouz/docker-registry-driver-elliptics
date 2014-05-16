@@ -18,7 +18,7 @@ Edit your configuration so that `storage` reads `elliptics`.
 
 You may add any of the following to your main docker-registry configuration to further configure it.
 
-1. `elliptics_nodes`: Elliptics remotes
+1. `elliptics_nodes`: Elliptics remotes. Endpoint is `host:port:af`. `af` is address family as number. Use `2` for IPv4, `10` for IPv6
 1. `elliptics_wait_timeout`: time to wait for the operation complete
 1. `elliptics_check_timeout`: timeout for pinging node
 1. `elliptics_io_thread_num`: number of IO threads in processing pool
@@ -33,11 +33,11 @@ Example:
 
 ```yaml
 storage: elliptics
-elliptics_nodes:
-      elliptics-host1: 1025
-      elliptics-host2: 1025
+elliptics_nodes: [
+      "elliptics-host1:1025:2",
+      "elliptics-host2:1025:10",
       ...
-      hostN: port
+      "host:port:af" ] # or spaceseparated string
 elliptics_wait_timeout: 60
 elliptics_check_timeout: 60
 elliptics_io_thread_num: 2

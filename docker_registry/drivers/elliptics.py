@@ -13,6 +13,8 @@ Packages: http://repo.reverbrain.com/
 
 """
 
+import types
+
 import itertools
 import logging
 
@@ -67,17 +69,25 @@ class Storage(driver.Base):
         self.namespace = config.get('elliptics_namespace', DEFAULT_NAMESPACE)
         logger.info("Using namespace %s", self.namespace)
 
+        remotes_configuration = config.get('elliptics_nodes')
+        if remotes_configuration is None:
+            raise ValueError("elliptics_nodes must be specified")
+        elif isinstance(remotes_configuration,
+                        (types.TupleType, types.ListType)):
+            remotes = remotes_configuration
+        elif isinstance(remotes_configuration, types.StringTypes):
+            remotes = remotes_configuration.split()
+        else:
+            raise ValueError("elliptics_nodes must be list, tuple or string")
+
         at_least_one = False
-        for host, port in config.get(
-                'elliptics_nodes', {'localhost': 1025}).iteritems():
+        for remote in remotes:
             try:
-                self._elliptics_node.add_remote(host, port,
-                                                config.get(
-                                                    'elliptics_addr_family',
-                                                    2))
+                logger.debug("Add remote %s", remote)
+                self._elliptics_node.add_remote(remote)
                 at_least_one = True
             except Exception as err:
-                logger.error("Failed to add remote %s:%d %s", host, port, err)
+                logger.error("Failed to add remote %s: %s", remote, err)
 
         if not at_least_one:
             raise Exception("Unable to connect to Elliptics")
@@ -88,6 +98,10 @@ class Storage(driver.Base):
         session.groups = self.groups
         session.set_namespace(self.namespace)
         session.exceptions_policy = elliptics.exceptions_policy.no_exceptions
+        # data should be stored in number of copies at least groups/2 + 1,
+        # otherwise exception will be raised
+        # i.e 3 groups -> 2 copies, 1 groups -> 1 copy
+        session.set_checker(elliptics.checkers.quorum)
         return session
 
     def s_find(self, tags):
