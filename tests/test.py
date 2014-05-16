@@ -16,4 +16,4 @@ class TestDriver(testing.Driver):
     def __init__(self):
         self.scheme = 'elliptics'
         self.path = ''
-        self.config = testing.Config({})
+        self.config = testing.Config({"elliptics_nodes": "1.1.2.3:1025:2 10.0.0.2:1025:10"})
