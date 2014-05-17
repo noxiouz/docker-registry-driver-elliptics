@@ -7,14 +7,14 @@ except ImportError:
     import distutils.core as setuptools
 
 
-__author__ = 'Mangled Deutz'
+__author__ = 'Anton Tiurin'
 __copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
 __version__ = '0.0.3'
-__maintainer__ = 'Mangled Deutz'
-__email__ = 'olivier@webitup.fr'
+__maintainer__ = 'Anton Tiurin'
+__email__ = 'noxiouz@yandex.ru'
 __status__ = 'Production'
 
 __title__ = 'docker-registry-driver-elliptics'
