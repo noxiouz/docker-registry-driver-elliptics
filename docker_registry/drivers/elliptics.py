@@ -39,27 +39,45 @@ logger = logging.getLogger(__name__)
 DEFAULT_NAMESPACE = "DOCKER"
 
 
+DEFAUL_WAIT_TIMEOUT = 60
+DEFAULT_CHECK_TIMEOUT = 60
+DEFAULT_IO_THREAD_NUM = 2
+DEFAULT_NET_THREAD_NUM = 2
+DEFAULT_NONBLOCKING_IO_THREAD_NUM = 2
+DEFAULT_GROUPS = [1]
+
+
 class Storage(driver.Base):
 
     def __init__(self, path=None, config=None):
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
-        cfg.config.wait_timeout = config.get("elliptics_wait_timeout", 60)
+        cfg.config.wait_timeout = int(config.get("elliptics_wait_timeout",
+                                                 DEFAUL_WAIT_TIMEOUT))
         # The parameter which sets the timeout for pinging node
-        cfg.config.check_timeout = config.get("elliptics_check_timeout", 60)
+        cfg.config.check_timeout = int(config.get("elliptics_check_timeout",
+                                                  DEFAULT_CHECK_TIMEOUT))
         # Number of IO threads in processing pool
-        cfg.config.io_thread_num = config.get("elliptics_io_thread_num", 2)
+        cfg.config.io_thread_num = int(config.get("elliptics_io_thread_num",
+                                                  DEFAULT_IO_THREAD_NUM))
         # Number of threads in network processing pool
-        cfg.config.net_thread_num = config.get("elliptics_net_thread_num", 2)
+        cfg.config.net_thread_num = int(config.get("elliptics_net_thread_num",
+                                                   DEFAULT_NET_THREAD_NUM))
         # Number of IO threads in processing pool dedicated to nonblocking ops
-        nblock_iothreads = config.get("elliptics_nonblocking_io_thread_num", 2)
-        cfg.config.nonblocking_io_thread_num = nblock_iothreads
-        self.groups = config.get('elliptics_groups', [1])
+        nblock_iothreads = config.get("elliptics_nonblocking_io_thread_num",
+                                      DEFAULT_NONBLOCKING_IO_THREAD_NUM)
+
+        cfg.config.nonblocking_io_thread_num = int(nblock_iothreads)
+        self.groups = config.get('elliptics_groups', DEFAULT_GROUPS)
+
+        if isinstance(self.groups, types.StringTypes):
+            self.groups = map(int, self.groups.strip('[]').split(','))
+
         if len(self.groups) == 0:
             raise ValueError("Specify groups")
 
         # loglevel of elliptics logger
-        elliptics_log_level = config.get('elliptics_verbosity', 0)
+        elliptics_log_level = int(config.get('elliptics_verbosity', 0))
 
         # path to logfile
         elliptics_log_file = config.get('elliptics_logfile', '/dev/stderr')
