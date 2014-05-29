@@ -50,6 +50,9 @@ DEFAULT_GROUPS = [1]
 class Storage(driver.Base):
 
     def __init__(self, path=None, config=None):
+        # Turn on streaming support
+        self.supports_bytes_range = True
+        # Create default Elliptics config
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
         cfg.config.wait_timeout = int(config.get("elliptics_wait_timeout",
