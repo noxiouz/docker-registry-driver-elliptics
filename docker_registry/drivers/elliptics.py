@@ -205,7 +205,17 @@ class Storage(driver.Base):
         self.put_content(path, ''.join(chunks))
 
     def stream_read(self, path, bytes_range=None):
-        yield self.get_content(path)
+        logger.debug("read range %s from %s", str(bytes_range), path)
+        if not self.exists(path):
+            raise exceptions.FileNotFoundError(
+                'No such directory: \'{0}\''.format(path))
+
+        if bytes_range is None:
+            yield self.s_read(path)
+        else:
+            offset = bytes_range[0]
+            size = bytes_range[1] - bytes_range[0]
+            yield self.s_read(path, offset=offset, size=size)
 
     def list_directory(self, path=None):
         if path is None:
