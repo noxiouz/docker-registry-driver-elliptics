@@ -146,8 +146,8 @@ class Storage(driver.Base):
         if fail:
             raise exceptions.FileNotFoundError("No such file %s" % key)
 
-    def s_read(self, path):
-        r = self._session.read_data(path, offset=0, size=0)
+    def s_read(self, path, offset=0, size=0):
+        r = self._session.read_data(path, offset=offset, size=size)
         r.wait()
         err = r.error()
         if err.code != 0:
@@ -219,9 +219,17 @@ class Storage(driver.Base):
             yield item
 
     def exists(self, path):
-        tag, _, _ = path.rpartition('/')
-        res = self.s_find(('docker', tag))
-        return path in res
+        logger.debug("Check existance of %s", path)
+        try:
+            # read is used instead of lookup
+            # just for future quorum reading check
+            self.s_read(path, 0, 1)
+        except IOError:
+            logger.debug("%s doesn't exist", path)
+            return False
+        else:
+            logger.debug("%s exists", path)
+            return True
 
     @lru.remove
     def remove(self, path):
@@ -233,4 +241,13 @@ class Storage(driver.Base):
         self.s_remove(path)
 
     def get_size(self, path):
-        return len(self.get_content(path))
+        logger.debug("get_size of %s", path)
+        r = self._session.lookup(path)
+        r.wait()
+        lookups = r.get()
+        err = r.error()
+        if err.code != 0:
+            raise OSError("Unable to get size of %s %s" % (path, err))
+        size = lookups[0].size
+        logger.debug("size of %s = %d", path, size)
+        return size
