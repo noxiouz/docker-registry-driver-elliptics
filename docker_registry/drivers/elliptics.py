@@ -224,7 +224,7 @@ class Storage(driver.Base):
             # read is used instead of lookup
             # just for future quorum reading check
             self.s_read(path, 0, 1)
-        except IOError:
+        except exceptions.FileNotFoundError:
             logger.debug("%s doesn't exist", path)
             return False
         else:
