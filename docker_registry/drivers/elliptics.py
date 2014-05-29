@@ -247,7 +247,8 @@ class Storage(driver.Base):
         lookups = r.get()
         err = r.error()
         if err.code != 0:
-            raise OSError("Unable to get size of %s %s" % (path, err))
+            raise exceptions.FileNotFoundError(
+                "Unable to get size of %s %s" % (path, err))
         size = lookups[0].size
         logger.debug("size of %s = %d", path, size)
         return size
