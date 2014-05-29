@@ -217,7 +217,7 @@ class Storage(driver.Base):
             yield self.s_read(path)
         else:
             offset = bytes_range[0]
-            size = bytes_range[1] - bytes_range[0]
+            size = bytes_range[1] - bytes_range[0] + 1
             yield self.s_read(path, offset=offset, size=size)
 
     def list_directory(self, path=None):
