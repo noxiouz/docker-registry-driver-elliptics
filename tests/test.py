@@ -34,6 +34,7 @@ class TestDriver(testing.Driver):
 class TestBorderDriverCases(object):
     def __init__(self):
         self.scheme = 'elliptics'
+        self.path = ''
         self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE,
                                       'elliptics_groups': [999, 1000]})
         self.get_random_string = testing.Driver.gen_random_string
