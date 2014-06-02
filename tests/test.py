@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import random
+import string
 
 from docker_registry import testing
 from docker_registry.core import exceptions
@@ -37,7 +39,10 @@ class TestBorderDriverCases(object):
         self.path = ''
         self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE,
                                       'elliptics_groups': [999, 1000]})
-        self.get_random_string = testing.Driver.gen_random_string
+
+    def gen_random_string(self, length=16):
+        return ''.join([random.choice(string.ascii_uppercase + string.digits)
+                        for x in range(length)]).lower()
 
     def setUp(self):
         storage = driver.fetch(self.scheme)
