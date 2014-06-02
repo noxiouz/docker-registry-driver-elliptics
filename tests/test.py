@@ -24,6 +24,11 @@ class TestDriver(testing.Driver):
         self.path = ''
         self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE})
 
+    # @tools.raises(exceptions.FileNotFoundError)
+    def test_remove_inexistent_path(self):
+        filename = self.gen_random_string()
+        self._storage.remove("/".join((filename, filename)))
+
 
 def _set_up_with_config(config):
     config = testing.Config(config)

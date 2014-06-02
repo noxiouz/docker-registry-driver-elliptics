@@ -251,7 +251,7 @@ class Storage(driver.Base):
         try:
             for subdir in self.list_directory(path):
                 self.s_remove(subdir)
-        except OSError as err:
+        except exceptions.FileNotFoundError as err:
             logger.warning(err)
         self.s_remove(path)
 
