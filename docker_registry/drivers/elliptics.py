@@ -13,6 +13,7 @@ Packages: http://repo.reverbrain.com/
 
 """
 
+import os
 import types
 
 import itertools
@@ -144,7 +145,7 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            logger.warning("Unable to remove indexes for key %s %s",
+            logger.warning("Unable to remove key %s indexes %s",
                            key, err.message)
         if fail:
             raise exceptions.FileNotFoundError("No such file %s" % key)
@@ -191,16 +192,44 @@ class Storage(driver.Base):
         logger.debug("put_content: write %s with tag %s", path, tag)
         self.s_write(path, content, ('docker', tag))
 
-        logger.debug("put_content: creating directory structure")
-        spl_path = path.rsplit('/')[:-1]
-        while spl_path:
-            _path = '/'.join(spl_path)
-            _tag = '/'.join(spl_path[:-1])
-            spl_path.pop()
-            logger.debug("put_content: write fake directory %s tag: %s",
-                         _path, _tag)
-            self.s_write(_path, "DIRECTORY", ('docker', _tag))
+        # logger.debug("put_content: creating directory structure")
+        # spl_path = path.rsplit('/')[:-1]
+        # while spl_path:
+        #     _path = '/'.join(spl_path)
+        #     _tag = '/'.join(spl_path[:-1])
+        #     spl_path.pop()
+        #     logger.debug("put_content: write fake directory %s tag: %s",
+        #                  _path, _tag)
+        #     self.s_write(_path, "DIRECTORY", ('docker', _tag))
+        self.create_fake_dir_struct(path)
         return path
+
+    def create_fake_dir_struct(self, path):
+        """
+        `path` is full filename (i.e. to create structure for file 'a/b/c'
+        `path` must be `a/b/c`).
+
+        To support listing and existance operations fake directory struct
+        is created on top of key-value and index operations.
+        Every file is tagged with his dirname index.
+        (i.e a/b/c. `c` content would be written as key `a/b/c` and marked
+        in index `a/b`
+        Fake directory file would be written as key `a/b` with a dummy content
+        to support existance operation.
+        Listing of `path` is performed as looking for all key marked
+        with `path` index.
+        """
+        logger.debug("creating fake directory structure %s", path)
+        # get parent dir for a given filepath
+        fakedir_key = os.path.dirname(path)
+        while True:
+            _tag = os.path.dirname(fakedir_key)
+            logger.debug("creating fake dir %s %s", fakedir_key, _tag)
+            self.s_write(fakedir_key, "DIRECTORY", ('docker', _tag))
+            fakedir_key = _tag
+            if not fakedir_key:  # root has been reached. fakedir_key is empty.
+                break
+        logger.debug("fake directory structure %s has been created", path)
 
     def stream_write(self, path, fp):
         chunks = []
