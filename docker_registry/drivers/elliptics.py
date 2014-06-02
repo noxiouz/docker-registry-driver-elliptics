@@ -53,6 +53,8 @@ class Storage(driver.Base):
     def __init__(self, path=None, config=None):
         # Turn on streaming support
         self.supports_bytes_range = True
+        # Increase buffer size up to 640 Kb
+        self.buffer_size = 640 * 1024
         # Create default Elliptics config
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
@@ -175,6 +177,26 @@ class Storage(driver.Base):
         if err.code != 0:
             raise IOError("Setting indexes failed {0}".format(err))
 
+    def s_append(self, key, content):
+        session = self._session
+        session.ioflags = elliptics.io_flags.append
+
+        # set offset to resolve function overloading
+        r = session.write_data(key, content, offset=0)
+        r.wait()
+        err = r.error()
+        if err.code != 0:
+            raise IOError("Writing failed {0}".format(err))
+
+    def s_write_file(self, path, content):
+        tag, _, _ = path.rpartition('/')
+        if len(content) == 0:
+            content = "EMPTY"
+        logger.debug("put_content: write %s with tag %s", path, tag)
+        self.s_write(path, content, ('docker', tag))
+        self.create_fake_dir_struct(path)
+        return path
+
     @lru.get
     def get_content(self, path):
         try:
@@ -185,24 +207,7 @@ class Storage(driver.Base):
     @lru.set
     def put_content(self, path, content):
         logger.debug("put_content %s %d", path, len(content))
-        tag, _, _ = path.rpartition('/')
-        if len(content) == 0:
-            content = "EMPTY"
-
-        logger.debug("put_content: write %s with tag %s", path, tag)
-        self.s_write(path, content, ('docker', tag))
-
-        # logger.debug("put_content: creating directory structure")
-        # spl_path = path.rsplit('/')[:-1]
-        # while spl_path:
-        #     _path = '/'.join(spl_path)
-        #     _tag = '/'.join(spl_path[:-1])
-        #     spl_path.pop()
-        #     logger.debug("put_content: write fake directory %s tag: %s",
-        #                  _path, _tag)
-        #     self.s_write(_path, "DIRECTORY", ('docker', _tag))
-        self.create_fake_dir_struct(path)
-        return path
+        return self.s_write_file(path, content)
 
     def create_fake_dir_struct(self, path):
         """
@@ -232,16 +237,28 @@ class Storage(driver.Base):
         logger.debug("fake directory structure %s has been created", path)
 
     def stream_write(self, path, fp):
-        chunks = []
+        first_chunk = True
         while True:
             try:
                 buf = fp.read(self.buffer_size)
                 if not buf:
                     break
-                chunks += buf
-            except IOError:
+
+                # add buffer-in-the-middle
+                # not to write small chunks
+
+                if not first_chunk:
+                    self.s_append(path, buf)
+                else:
+                    # first of all oldone should be rewritten if exists.
+                    self.s_write_file(path, buf)
+                    first_chunk = False
+
+            except IOError as err:
+                logger.error("unable to read from a given socket %s", err)
                 break
-        self.put_content(path, ''.join(chunks))
+        # should I clean not completely written file
+        # in case of error?
 
     def stream_read(self, path, bytes_range=None):
         logger.debug("read range %s from %s", str(bytes_range), path)
