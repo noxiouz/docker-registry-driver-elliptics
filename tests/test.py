@@ -4,6 +4,7 @@ import logging
 
 from docker_registry import testing
 from docker_registry.core import exceptions
+from docker_registry.core import driver
 
 from nose import tools
 
@@ -24,18 +25,41 @@ class TestDriver(testing.Driver):
         self.path = ''
         self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE})
 
-    # @tools.raises(exceptions.FileNotFoundError)
+    @tools.raises(exceptions.FileNotFoundError)
     def test_remove_inexistent_path(self):
         filename = self.gen_random_string()
         self._storage.remove("/".join((filename, filename)))
 
 
+class TestBorderDriverCases(object):
+    def __init__(self):
+        self.scheme = 'elliptics'
+        self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE,
+                                      'elliptics_groups': [999, 1000]})
+        self.get_random_string = testing.Driver.gen_random_string
+
+    def setUp(self):
+        storage = driver.fetch(self.scheme)
+        self._storage = storage(self.path, self.config)
+
+    @tools.raises(exceptions.FileNotFoundError)
+    def test_s_remove(self):
+        filename = self.gen_random_string()
+        self._storage.s_remove(filename)
+
+    @tools.raises(IOError)
+    def test_s_write(self):
+        filename = self.gen_random_string()
+        tag = self.gen_random_string(length=5)
+        self._storage.s_write(filename, "dummycontent", (tag,))
+
+
 def _set_up_with_config(config):
     config = testing.Config(config)
-    driver = testing.Driver(scheme='elliptics',
-                            config=config)
-    driver.setUp()
-    return driver
+    d = testing.Driver(scheme='elliptics',
+                       config=config)
+    d.setUp()
+    return d
 
 
 @tools.raises(exceptions.ConfigError)
@@ -60,11 +84,11 @@ def test_elliptics_zero_groups_conf():
 
 def test_elliptics_groups_conf():
     groups = [1, 2, 3]
-    driver = _set_up_with_config({'elliptics_groups': groups,
-                                  'elliptics_nodes': GOOD_REMOTE})
-    assert sorted(driver._storage._session.groups) == sorted(groups)
+    dr = _set_up_with_config({'elliptics_groups': groups,
+                              'elliptics_nodes': GOOD_REMOTE})
+    assert sorted(dr._storage._session.groups) == sorted(groups)
 
     groups_as_string = "[1, 2,3]"
-    driver = _set_up_with_config({'elliptics_groups': groups_as_string,
-                                  'elliptics_nodes': GOOD_REMOTE})
-    assert sorted(driver._storage._session.groups) == sorted(groups)
+    dr = _set_up_with_config({'elliptics_groups': groups_as_string,
+                              'elliptics_nodes': GOOD_REMOTE})
+    assert sorted(dr._storage._session.groups) == sorted(groups)
