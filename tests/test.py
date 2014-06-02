@@ -24,5 +24,14 @@ class TestDriver(testing.Driver):
 @tools.raises(ValueError)
 def test_elliptics_nodes_conf():
     config = testing.Config({})
-    driver = testing.Driver(config=config)
+    driver = testing.Driver(scheme='elliptics',
+                            config=config)
+    driver.setUp()
+
+
+@tools.raises(ValueError)
+def test_elliptics_zero_groups_conf():
+    config = testing.Config({'elliptics_groups': []})
+    driver = testing.Driver(scheme='elliptics',
+                            config=config)
     driver.setUp()
