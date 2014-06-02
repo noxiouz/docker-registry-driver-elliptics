@@ -45,7 +45,7 @@ def test_elliptics_wrong_nodes_type_conf():
 
 @tools.raises(exceptions.ConnectionError)
 def test_elliptics_bad_nodes_conf():
-    _set_up_with_config({'elliptics_nodes': BAD_REMOTE})
+    _set_up_with_config({'elliptics_nodes': [BAD_REMOTE]})
 
 
 @tools.raises(exceptions.ConfigError)
@@ -57,9 +57,9 @@ def test_elliptics_groups_conf():
     groups = [1, 2, 3]
     driver = _set_up_with_config({'elliptics_groups': groups,
                                   'elliptics_nodes': GOOD_REMOTE})
-    assert sorted(driver._session.groups) == sorted(groups)
+    assert sorted(driver._storage._session.groups) == sorted(groups)
 
     groups_as_string = "[1, 2,3]"
     driver = _set_up_with_config({'elliptics_groups': groups_as_string,
                                   'elliptics_nodes': GOOD_REMOTE})
-    assert sorted(driver._session.groups) == sorted(groups)
+    assert sorted(driver._storage._session.groups) == sorted(groups)
