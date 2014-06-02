@@ -183,15 +183,22 @@ class Storage(driver.Base):
 
     @lru.set
     def put_content(self, path, content):
+        logger.debug("put_content %s %d", path, len(content))
         tag, _, _ = path.rpartition('/')
         if len(content) == 0:
             content = "EMPTY"
+
+        logger.debug("put_content: write %s with tag %s", path, tag)
         self.s_write(path, content, ('docker', tag))
+
+        logger.debug("put_content: creating directory structure")
         spl_path = path.rsplit('/')[:-1]
         while spl_path:
             _path = '/'.join(spl_path)
             _tag = '/'.join(spl_path[:-1])
             spl_path.pop()
+            logger.debug("put_content: write fake directory %s tag: %s",
+                         _path, _tag)
             self.s_write(_path, "DIRECTORY", ('docker', _tag))
         return path
 
