@@ -80,7 +80,7 @@ class Storage(driver.Base):
             self.groups = map(int, self.groups.strip('[]').split(','))
 
         if len(self.groups) == 0:
-            raise ValueError("Specify groups")
+            raise exceptions.ConfigError("elliptics_groups must be specified")
 
         # loglevel of elliptics logger
         elliptics_log_level = int(config.get('elliptics_verbosity', 0))
@@ -95,26 +95,28 @@ class Storage(driver.Base):
 
         remotes_configuration = config.get('elliptics_nodes')
         if remotes_configuration is None:
-            raise ValueError("elliptics_nodes must be specified")
+            raise exceptions.ConfigError("elliptics_nodes must be specified")
         elif isinstance(remotes_configuration,
                         (types.TupleType, types.ListType)):
             remotes = remotes_configuration
         elif isinstance(remotes_configuration, types.StringTypes):
             remotes = remotes_configuration.split()
         else:
-            raise ValueError("elliptics_nodes must be list, tuple or string")
+            raise exceptions.ConfigError("elliptics_nodes must be list,"
+                                         "tuple or string")
 
-        at_least_one = False
         for remote in remotes:
             try:
-                logger.debug("Add remote %s", remote)
+                logger.debug("Remote %s is being added", remote)
                 self._elliptics_node.add_remote(remote)
-                at_least_one = True
+                logger.info("%s remote has been added successfully", remote)
             except Exception as err:
                 logger.error("Failed to add remote %s: %s", remote, err)
 
-        if not at_least_one:
-            raise Exception("Unable to connect to Elliptics")
+        if not self._session.routes.addresses():
+            # routing table is empty,
+            # as no remotes have been successfully added or conencted.
+            raise exceptions.ConnectionError("Unable to connect to Elliptics")
 
     @property
     def _session(self):
@@ -168,14 +170,14 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise IOError("Writing failed {0}".format(err))
+            raise exceptions.UnspecifiedError("Writing failed %s" % err)
 
         # Set indexes
         r = self._session.update_indexes(key, list(tags), [key] * len(tags))
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise IOError("Setting indexes failed {0}".format(err))
+            raise exceptions.UnspecifiedError("Indexe setting failed %s" % err)
 
     def s_append(self, key, content):
         session = self._session
@@ -302,7 +304,7 @@ class Storage(driver.Base):
         try:
             for subdir in self.list_directory(path):
                 self.s_remove(subdir)
-        except OSError as err:
+        except exceptions.FileNotFoundError as err:
             logger.warning(err)
         self.s_remove(path)
 
