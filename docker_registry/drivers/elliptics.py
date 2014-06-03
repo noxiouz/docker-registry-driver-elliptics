@@ -167,14 +167,14 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise IOError("Writing failed {0}".format(err))
+            raise exceptions.UnspecifiedError("Writing failed %s" % err)
 
         # Set indexes
         r = self._session.update_indexes(key, list(tags), [key] * len(tags))
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise IOError("Setting indexes failed {0}".format(err))
+            raise exceptions.UnspecifiedError("Indexe setting failed %s" % err)
 
     @lru.get
     def get_content(self, path):
