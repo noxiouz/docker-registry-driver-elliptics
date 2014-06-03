@@ -54,7 +54,7 @@ class Storage(driver.Base):
         # Turn on streaming support
         self.supports_bytes_range = True
         # Increase buffer size up to 640 Kb
-        self.buffer_size = 640 * 1024
+        self.buffer_size = 128 * 1024
         # Create default Elliptics config
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
@@ -276,7 +276,7 @@ class Storage(driver.Base):
             yield self.s_read(path, offset=offset, size=size)
 
     def list_directory(self, path=None):
-        if path is None:
+        if path is None:  # pragma: no cover
             path = ""
 
         if not self.exists(path) and path:
