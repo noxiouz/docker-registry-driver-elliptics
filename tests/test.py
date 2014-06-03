@@ -53,7 +53,7 @@ class TestBorderDriverCases(object):
         filename = self.gen_random_string()
         self._storage.s_remove(filename)
 
-    @tools.raises(IOError)
+    @tools.raises(exceptions.UnspecifiedError)
     def test_s_write(self):
         filename = self.gen_random_string()
         tag = self.gen_random_string(length=5)
