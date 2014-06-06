@@ -36,18 +36,12 @@ class RegistryFS(LoggingMixIn, Operations):
         return str(path.lstrip("/"))
 
     def readdir(self, path, fh):
-        if path == "/":
-            path = ""
         path = self.transform_path(path)
 
         def apply(item, path):
-            # ugly hack - I'll fix it later
-            if not path:
-                path = "/"
             if item.startswith(path):
-                return item.partition(path)[2].lstrip("/")
-            else:
-               return item
+                item = item[len(path):]
+            return item.lstrip("/")
 
         return (apply(i, path) for i in self.storage.list_directory(path) if i)
 
