@@ -40,10 +40,16 @@ class RegistryFS(LoggingMixIn, Operations):
             path = ""
         path = self.transform_path(path)
 
-        def apply(item):
-            return item.partition(path)[2].lstrip("/")
+        def apply(item, path):
+            # ugly hack - I'll fix it later
+            if not path:
+                path = "/"
+            if item.startswith(path):
+                return item.partition(path)[2].lstrip("/")
+            else:
+               return item
 
-        return (apply(i) for i in self.storage.list_directory(path) if i)
+        return (apply(i, path) for i in self.storage.list_directory(path) if i)
 
     def getattr(self, path, fh=None):
         if path == "/":
