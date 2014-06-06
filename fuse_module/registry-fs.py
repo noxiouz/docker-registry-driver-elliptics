@@ -28,7 +28,7 @@ class RegistryFS(LoggingMixIn, Operations):
             self.storage = Storage(config=cfg)
         except Exception as err:
             log.error(err)
-            FuseOSError(-100)
+            raise FuseOSError(-100)
 
     def transform_path(self, path):
         # strip a starting slash
