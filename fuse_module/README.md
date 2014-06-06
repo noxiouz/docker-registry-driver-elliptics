@@ -12,7 +12,7 @@ Also you have to install `libfuse`.
 
 ## Usage 
 
-Tak a look into fuse_module directory. After that
+Take a look into fuse_module directory. After that
 
 ```
 sudo python registry-fs.py <path_to_conig_file> <mountpoint>
