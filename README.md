@@ -4,7 +4,7 @@ This is a [docker-registry backend driver](https://github.com/dotcloud/docker-re
 
 [![PyPI version][pypi-image]][pypi-url]
 [![Build Status][travis-image]][travis-url]
-
+[![Coverage Status](https://coveralls.io/repos/noxiouz/docker-registry-driver-elliptics/badge.png?branch=master)](https://coveralls.io/r/noxiouz/docker-registry-driver-elliptics?branch=master)
 ## Usage
 
 Assuming you have a working docker-registry and elliptics setup.
@@ -52,7 +52,7 @@ elliptics_loglevel: debug
 
 Clone this.
 
-Install elliptics:
+Install `Elliptics`:
 
 ```
 sudo apt-get install curl
@@ -70,7 +70,7 @@ sudo apt-get install python-pip
 sudo pip install tox
 ```
 
-Start the test elliptics:
+Start the test `Elliptics`:
 
 ```
 cd fixtures
