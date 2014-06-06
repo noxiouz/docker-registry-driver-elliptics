@@ -59,6 +59,11 @@ class TestBorderDriverCases(object):
         tag = self.gen_random_string(length=5)
         self._storage.s_write(filename, "dummycontent", (tag,))
 
+    @tools.raises(exceptions.UnspecifiedError)
+    def test_s_append(self):
+        filename = self.gen_random_string()
+        tag = self.gen_random_string(length=5)
+        self._storage.s_append(filename, "dummycontent")
 
 def _set_up_with_config(config):
     config = testing.Config(config)

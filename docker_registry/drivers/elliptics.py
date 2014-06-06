@@ -188,7 +188,7 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            raise IOError("Writing failed {0}".format(err))
+            raise exceptions.UnspecifiedError("Writing failed {0}".format(err))
 
     def s_write_file(self, path, content):
         tag, _, _ = path.rpartition('/')
