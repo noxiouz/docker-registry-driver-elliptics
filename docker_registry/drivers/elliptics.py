@@ -251,7 +251,8 @@ class Storage(driver.Base):
                 if not first_chunk:
                     self.s_append(path, buf)
                 else:
-                    # first of all oldone should be rewritten if exists.
+                    # first of all the old file should be rewritten if exists.
+                    # all tags will be set up.
                     self.s_write_file(path, buf)
                     first_chunk = False
 

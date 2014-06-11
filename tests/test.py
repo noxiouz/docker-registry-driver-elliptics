@@ -3,6 +3,7 @@
 import logging
 import random
 import string
+import StringIO
 
 from docker_registry.core import driver
 from docker_registry.core import exceptions
@@ -63,6 +64,27 @@ class TestBorderDriverCases(object):
     def test_s_append(self):
         filename = self.gen_random_string()
         self._storage.s_append(filename, "dummycontent")
+
+
+class TestWriteStreaming(object):
+    def __init__(self):
+        self.scheme = 'elliptics'
+        self.path = ''
+        self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE})
+
+    def gen_random_string(self, length=16):
+        return ''.join([random.choice(string.ascii_uppercase + string.digits)
+                        for x in range(length)]).lower()
+
+    def test_s_stream_write_many_chunks(self):
+        # decrease buffer size to
+        self._storage.buffer_size = 100
+        filename = self.gen_random_string(length=10)
+        path = "/".join((filename, filename))
+        fakedata = self.gen_random_string(length=201)
+        fakefile = StringIO.StringIO(fakedata)
+        self._storage.stream_write(path, fakefile)
+        assert self._storage.get_content(path) == fakedata
 
 
 def _set_up_with_config(config):
