@@ -13,6 +13,7 @@ Packages: http://repo.reverbrain.com/
 
 """
 
+import os
 import types
 
 import itertools
@@ -52,6 +53,8 @@ class Storage(driver.Base):
     def __init__(self, path=None, config=None):
         # Turn on streaming support
         self.supports_bytes_range = True
+        # Increase buffer size up to 640 Kb
+        self.buffer_size = 128 * 1024
         # Create default Elliptics config
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
@@ -146,7 +149,7 @@ class Storage(driver.Base):
         r.wait()
         err = r.error()
         if err.code != 0:
-            logger.warning("Unable to remove indexes for key %s %s",
+            logger.warning("Unable to remove key %s indexes %s",
                            key, err.message)
         if fail:
             raise exceptions.FileNotFoundError("No such file %s" % key)
@@ -176,6 +179,26 @@ class Storage(driver.Base):
         if err.code != 0:
             raise exceptions.UnspecifiedError("Indexe setting failed %s" % err)
 
+    def s_append(self, key, content):
+        session = self._session
+        session.ioflags = elliptics.io_flags.append
+
+        # set offset to resolve function overloading
+        r = session.write_data(key, content, offset=0)
+        r.wait()
+        err = r.error()
+        if err.code != 0:
+            raise exceptions.UnspecifiedError("Writing failed {0}".format(err))
+
+    def s_write_file(self, path, content):
+        tag, _, _ = path.rpartition('/')
+        if len(content) == 0:
+            content = "EMPTY"
+        logger.debug("put_content: write %s with tag %s", path, tag)
+        self.s_write(path, content, ('docker', tag))
+        self.create_fake_dir_struct(path)
+        return path
+
     @lru.get
     def get_content(self, path):
         try:
@@ -185,29 +208,59 @@ class Storage(driver.Base):
 
     @lru.set
     def put_content(self, path, content):
-        tag, _, _ = path.rpartition('/')
-        if len(content) == 0:
-            content = "EMPTY"
-        self.s_write(path, content, ('docker', tag))
-        spl_path = path.rsplit('/')[:-1]
-        while spl_path:
-            _path = '/'.join(spl_path)
-            _tag = '/'.join(spl_path[:-1])
-            spl_path.pop()
-            self.s_write(_path, "DIRECTORY", ('docker', _tag))
-        return path
+        logger.debug("put_content %s %d", path, len(content))
+        return self.s_write_file(path, content)
+
+    def create_fake_dir_struct(self, path):
+        """`path` is full filename (i.e. to create structure for file 'a/b/c'
+        `path` must be `a/b/c`).
+
+        To support listing and existance operations fake directory struct
+        is created on top of key-value and index operations.
+        Every file is tagged with his dirname index.
+        (i.e a/b/c. `c` content would be written as key `a/b/c` and marked
+        in index `a/b`
+        Fake directory file would be written as key `a/b` with a dummy content
+        to support existance operation.
+        Listing of `path` is performed as looking for all key marked
+        with `path` index.
+        """
+        logger.debug("creating fake directory structure %s", path)
+        # get parent dir for a given filepath
+        fakedir_key = os.path.dirname(path)
+        while True:
+            _tag = os.path.dirname(fakedir_key)
+            logger.debug("creating fake dir %s %s", fakedir_key, _tag)
+            self.s_write(fakedir_key, "DIRECTORY", ('docker', _tag))
+            fakedir_key = _tag
+            if not fakedir_key:  # root has been reached. fakedir_key is empty.
+                break
+        logger.debug("fake directory structure %s has been created", path)
 
     def stream_write(self, path, fp):
-        chunks = []
+        first_chunk = True
         while True:
             try:
                 buf = fp.read(self.buffer_size)
                 if not buf:
                     break
-                chunks += buf
-            except IOError:
+
+                # add buffer-in-the-middle
+                # not to write small chunks
+
+                if not first_chunk:
+                    self.s_append(path, buf)
+                else:
+                    # first of all the old file should be rewritten if exists.
+                    # all tags will be set up.
+                    self.s_write_file(path, buf)
+                    first_chunk = False
+
+            except IOError as err:
+                logger.error("unable to read from a given socket %s", err)
                 break
-        self.put_content(path, ''.join(chunks))
+        # should I clean not completely written file
+        # in case of error?
 
     def stream_read(self, path, bytes_range=None):
         logger.debug("read range %s from %s", str(bytes_range), path)
@@ -223,7 +276,7 @@ class Storage(driver.Base):
             yield self.s_read(path, offset=offset, size=size)
 
     def list_directory(self, path=None):
-        if path is None:
+        if path is None:  # pragma: no cover
             path = ""
 
         if not self.exists(path) and path:
