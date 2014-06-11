@@ -3,11 +3,14 @@ from __future__ import with_statement
 
 import logging
 import os
-import sys
 import stat
+import sys
 
+from fuse import FUSE
+from fuse import FuseOSError
+from fuse import LoggingMixIn
+from fuse import Operations
 import yaml
-from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
 
 from docker_registry.drivers.elliptics import Storage
 

@@ -212,8 +212,7 @@ class Storage(driver.Base):
         return self.s_write_file(path, content)
 
     def create_fake_dir_struct(self, path):
-        """
-        `path` is full filename (i.e. to create structure for file 'a/b/c'
+        """`path` is full filename (i.e. to create structure for file 'a/b/c'
         `path` must be `a/b/c`).
 
         To support listing and existance operations fake directory struct

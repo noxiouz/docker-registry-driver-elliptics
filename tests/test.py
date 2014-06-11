@@ -4,9 +4,9 @@ import logging
 import random
 import string
 
-from docker_registry import testing
-from docker_registry.core import exceptions
 from docker_registry.core import driver
+from docker_registry.core import exceptions
+from docker_registry import testing
 
 from nose import tools
 
@@ -62,8 +62,8 @@ class TestBorderDriverCases(object):
     @tools.raises(exceptions.UnspecifiedError)
     def test_s_append(self):
         filename = self.gen_random_string()
-        tag = self.gen_random_string(length=5)
         self._storage.s_append(filename, "dummycontent")
+
 
 def _set_up_with_config(config):
     config = testing.Config(config)
