@@ -72,6 +72,10 @@ class TestWriteStreaming(object):
         self.path = ''
         self.config = testing.Config({'elliptics_nodes': GOOD_REMOTE})
 
+    def setUp(self):
+        storage = driver.fetch(self.scheme)
+        self._storage = storage(self.path, self.config)
+
     def gen_random_string(self, length=16):
         return ''.join([random.choice(string.ascii_uppercase + string.digits)
                         for x in range(length)]).lower()
