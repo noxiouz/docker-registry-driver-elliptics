@@ -1,2 +1,2 @@
-docker-registry-core>=1,<2
+docker-registry-core>=2,<3
 elliptics>=2
