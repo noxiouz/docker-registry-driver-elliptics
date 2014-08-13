@@ -61,7 +61,7 @@ class Storage(driver.Base):
         cfg.config.wait_timeout = (config.elliptics_wait_timeout or
                                    DEFAUL_WAIT_TIMEOUT)
         # The parameter which sets the timeout for pinging node
-        cfg.config.check_timeout = (config.get.elliptics_check_timeout or
+        cfg.config.check_timeout = (config.elliptics_check_timeout or
                                     DEFAULT_CHECK_TIMEOUT)
         # Number of IO threads in processing pool
         cfg.config.io_thread_num = (config.elliptics_io_thread_num or
@@ -90,10 +90,10 @@ class Storage(driver.Base):
         log = elliptics.Logger(elliptics_log_file, elliptics_log_level)
         self._elliptics_node = elliptics.Node(log, cfg)
 
-        self.namespace = config.get('elliptics_namespace', DEFAULT_NAMESPACE)
+        self.namespace = config.elliptics_namespace or DEFAULT_NAMESPACE
         logger.info("Using namespace %s", self.namespace)
 
-        remotes_configuration = config.get('elliptics_nodes')
+        remotes_configuration = config.elliptics_nodes
         if remotes_configuration is None:
             raise exceptions.ConfigError("elliptics_nodes must be specified")
         elif isinstance(remotes_configuration,
