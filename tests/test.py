@@ -118,6 +118,12 @@ def test_elliptics_bad_nodes_conf():
 def test_elliptics_zero_groups_conf():
     _set_up_with_config({'elliptics_groups': []})
 
+@tools.raises(exceptions.ConfigError)
+def test_elliptics_invalid_verbosity_conf():
+    groups = [1, 2, 3]
+    _set_up_with_config({'elliptics_groups': groups,
+                         'elliptics_nodes': GOOD_REMOTE,
+                         'elliptics_verbosity': 'blabla'})
 
 def test_elliptics_groups_conf():
     groups = [1, 2, 3]
