@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
-__version__ = '0.0.4'
+__version__ = '0.1.0'
 __maintainer__ = 'Anton Tiurin'
 __email__ = 'noxiouz@yandex.ru'
 __status__ = 'Production'
