@@ -46,6 +46,7 @@ DEFAULT_IO_THREAD_NUM = 2
 DEFAULT_NET_THREAD_NUM = 2
 DEFAULT_NONBLOCKING_IO_THREAD_NUM = 2
 DEFAULT_GROUPS = [1]
+DEFAULT_VERBOSITY = 'error'
 
 
 class Storage(driver.Base):
@@ -83,11 +84,16 @@ class Storage(driver.Base):
             raise exceptions.ConfigError("elliptics_groups must be specified")
 
         # loglevel of elliptics logger
-        elliptics_log_level = config.elliptics_verbosity or 0
+        elliptics_log_level = (config.elliptics_verbosity or
+                               DEFAULT_VERBOSITY).lower()
+        if elliptics_log_level not in elliptics.log_level.names.keys():
+            raise exceptions.ConfigError('Invalid log level %s. Use one of %s'
+                                         % (elliptics_log_level,
+                                            ','.join(elliptics.log_level.names.keys())))
 
         # path to logfile
         elliptics_log_file = config.elliptics_logfile or '/dev/stderr'
-        log = elliptics.Logger(elliptics_log_file, elliptics_log_level)
+        log = elliptics.Logger(elliptics_log_file, getattr(elliptics.log_level, elliptics_log_level))
         self._elliptics_node = elliptics.Node(log, cfg)
 
         self.namespace = config.elliptics_namespace or DEFAULT_NAMESPACE
