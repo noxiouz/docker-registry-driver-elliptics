@@ -58,23 +58,23 @@ class Storage(driver.Base):
         # Create default Elliptics config
         cfg = elliptics.Config()
         # The parameter which sets the time to wait for the operation complete
-        cfg.config.wait_timeout = int(config.get("elliptics_wait_timeout",
-                                                 DEFAUL_WAIT_TIMEOUT))
+        cfg.config.wait_timeout = (config.elliptics_wait_timeout or
+                                   DEFAUL_WAIT_TIMEOUT)
         # The parameter which sets the timeout for pinging node
-        cfg.config.check_timeout = int(config.get("elliptics_check_timeout",
-                                                  DEFAULT_CHECK_TIMEOUT))
+        cfg.config.check_timeout = (config.get.elliptics_check_timeout or
+                                    DEFAULT_CHECK_TIMEOUT)
         # Number of IO threads in processing pool
-        cfg.config.io_thread_num = int(config.get("elliptics_io_thread_num",
-                                                  DEFAULT_IO_THREAD_NUM))
+        cfg.config.io_thread_num = (config.elliptics_io_thread_num or
+                                    DEFAULT_IO_THREAD_NUM)
         # Number of threads in network processing pool
-        cfg.config.net_thread_num = int(config.get("elliptics_net_thread_num",
-                                                   DEFAULT_NET_THREAD_NUM))
+        cfg.config.net_thread_num = (config.elliptics_net_thread_num or
+                                     DEFAULT_NET_THREAD_NUM)
         # Number of IO threads in processing pool dedicated to nonblocking ops
-        nblock_iothreads = config.get("elliptics_nonblocking_io_thread_num",
-                                      DEFAULT_NONBLOCKING_IO_THREAD_NUM)
+        nblock_iothreads = (config.elliptics_nonblocking_io_thread_num or
+                            DEFAULT_NONBLOCKING_IO_THREAD_NUM)
 
-        cfg.config.nonblocking_io_thread_num = int(nblock_iothreads)
-        self.groups = config.get('elliptics_groups', DEFAULT_GROUPS)
+        cfg.config.nonblocking_io_thread_num = nblock_iothreads
+        self.groups = config.elliptics_groups or DEFAULT_GROUPS
 
         if isinstance(self.groups, types.StringTypes):
             self.groups = map(int, self.groups.strip('[]').split(','))
@@ -83,10 +83,10 @@ class Storage(driver.Base):
             raise exceptions.ConfigError("elliptics_groups must be specified")
 
         # loglevel of elliptics logger
-        elliptics_log_level = int(config.get('elliptics_verbosity', 0))
+        elliptics_log_level = config.elliptics_verbosity or 0
 
         # path to logfile
-        elliptics_log_file = config.get('elliptics_logfile', '/dev/stderr')
+        elliptics_log_file = config.elliptics_logfile or '/dev/stderr'
         log = elliptics.Logger(elliptics_log_file, elliptics_log_level)
         self._elliptics_node = elliptics.Node(log, cfg)
 
