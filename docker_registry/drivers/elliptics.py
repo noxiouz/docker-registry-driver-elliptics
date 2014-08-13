@@ -84,8 +84,8 @@ class Storage(driver.Base):
             raise exceptions.ConfigError("elliptics_groups must be specified")
 
         # loglevel of elliptics logger
-        elliptics_log_level = (config.elliptics_verbosity.lower() or
-                               DEFAULT_VERBOSITY)
+        elliptics_log_level = (config.elliptics_verbosity or
+                               DEFAULT_VERBOSITY).lower()
         if elliptics_log_level not in elliptics.log_level.names.keys():
             raise exceptions.ConfigError('Invalid log level %s. Use one of %s'
                                          % (elliptics_log_level,
