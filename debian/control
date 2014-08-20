@@ -1,0 +1,18 @@
+Source: docker-registry-driver-elliptics
+Section: utils
+Priority: extra
+Maintainer: Anton Tyurin <noxiouz@yandex.ru>
+Build-Depends: debhelper (>= 7.0.50~),
+ python,
+ python-central | dh-python
+Standards-Version: 3.9.3
+Vcs-Git: git://github.com/noxiouz/docker-registry-driver-elliptics.git
+Vcs-Browser: https://github.com/noxiouz/docker-registry-driver-elliptics
+X-Python-Version: >= 2.6
+
+Package: docker-registry-driver-elliptics
+Architecture: any
+Depends: ${misc:Depends}, ${python:Versions},
+ elliptics-client
+Description: Elliptics driver for Docker registry
+ Docker registry backend driver for Elliptics

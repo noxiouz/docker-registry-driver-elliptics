@@ -1,0 +1,5 @@
+docker-registry-driver-elliptics (0.1.0.0) unstable; urgency=low
+
+  * Initial release.
+
+ -- Anton Tyurin <noxiouz@yandex-team.ru>  Wed, 20 Aug 2014 18:40:35 +0400
