@@ -12,7 +12,7 @@ X-Python-Version: >= 2.6
 
 Package: docker-registry-driver-elliptics
 Architecture: any
-Depends: ${misc:Depends}, ${python:Versions},
+Depends: ${misc:Depends},
  elliptics-client,
  docker-registry (>= 0.8)
 Description: Elliptics driver for Docker registry
