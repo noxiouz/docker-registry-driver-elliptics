@@ -93,7 +93,9 @@ class Storage(driver.Base):
 
         # path to logfile
         elliptics_log_file = config.elliptics_logfile or '/dev/stderr'
-        log = elliptics.Logger(elliptics_log_file, getattr(elliptics.log_level, elliptics_log_level))
+        log = elliptics.Logger(elliptics_log_file,
+                               getattr(elliptics.log_level,
+                                       elliptics_log_level))
         self._elliptics_node = elliptics.Node(log, cfg)
 
         self.namespace = config.elliptics_namespace or DEFAULT_NAMESPACE
@@ -111,17 +113,18 @@ class Storage(driver.Base):
             raise exceptions.ConfigError("elliptics_nodes must be list,"
                                          "tuple or string")
 
-        for remote in remotes:
-            try:
-                logger.debug("Remote %s is being added", remote)
-                self._elliptics_node.add_remote(remote)
-                logger.info("%s remote has been added successfully", remote)
-            except Exception as err:
-                logger.error("Failed to add remote %s: %s", remote, err)
+        try:
+            logger.error("Remotes %s is being added", remotes)
+            self._elliptics_node.add_remotes(remotes)
+            logger.info("%s remotes have been added successfully", remotes)
+        except Exception as err:
+            logger.error("Failed to add remotes %s: %s", remotes, err)
 
-        if not self._session.routes.addresses():
+        routes = self._session.routes.addresses()
+        if not routes:
             # routing table is empty,
             # as no remotes have been successfully added or conencted.
+            logger.error("routes %s, %s", routes, self._session.routes)
             raise exceptions.ConnectionError("Unable to connect to Elliptics")
 
     @property

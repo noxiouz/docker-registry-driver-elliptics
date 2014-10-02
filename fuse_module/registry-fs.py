@@ -60,7 +60,7 @@ class RegistryFS(LoggingMixIn, Operations):
         for i in ares.get():
             res = {'st_atime': i.timestamp.tsec,
                    'st_ctime': i.timestamp.tsec,
-                   'st_mode': 0777,  # ugly hack
+                   'st_mode': 0o777,  # ugly hack
                    'st_mtime': i.timestamp.tsec,
                    'st_nlink': 1,
                    'st_size': i.size}
