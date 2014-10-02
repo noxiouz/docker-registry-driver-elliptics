@@ -114,15 +114,17 @@ class Storage(driver.Base):
                                          "tuple or string")
 
         try:
-            logger.debug("Remotes %s is being added", remotes)
+            logger.error("Remotes %s is being added", remotes)
             self._elliptics_node.add_remotes(remotes)
             logger.info("%s remotes have been added successfully", remotes)
         except Exception as err:
             logger.error("Failed to add remotes %s: %s", remotes, err)
 
-        if not self._session.routes.addresses():
+        routes = self._session.routes.addresses()
+        if not routes:
             # routing table is empty,
             # as no remotes have been successfully added or conencted.
+            logger.error("routes %s, %s", routes, self._session.routes)
             raise exceptions.ConnectionError("Unable to connect to Elliptics")
 
     @property

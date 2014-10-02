@@ -13,7 +13,7 @@ from nose import tools
 
 logger = logging.getLogger(__name__)
 
-GOOD_REMOTE = "localhost:1025:2-0"
+GOOD_REMOTE = "localhost:1025:2"
 BAD_REMOTE = "localhost:1100:2-0"
 
 
