@@ -1,27 +1,26 @@
 language: python
-# Only python 27 is working for now
 python:
-  # - "2.6"
-  - "2.7"
-  # - "3.2"
-  # - "3.3"
-  # - "3.4"
-
+- '2.7'
 virtualenv:
   system_site_packages: true
-
 before_install:
-  - curl http://repo.reverbrain.com/REVERBRAIN.GPG | sudo apt-key add -
-  - echo "deb http://repo.reverbrain.com/precise/ current/amd64/" | sudo tee -a /etc/apt/sources.list
-  - echo "deb http://repo.reverbrain.com/precise/ current/all/" | sudo tee -a /etc/apt/sources.list
-  - sudo apt-get update -qq
-  - sudo apt-get install elliptics
-  - cd fixtures && sudo ./start.sh && cd -
-
+- curl http://repo.reverbrain.com/REVERBRAIN.GPG | sudo apt-key add -
+- echo "deb http://repo.reverbrain.com/precise/ current/amd64/" | sudo tee -a /etc/apt/sources.list
+- echo "deb http://repo.reverbrain.com/precise/ current/all/" | sudo tee -a /etc/apt/sources.list
+- sudo apt-get update -qq
+- sudo apt-get install elliptics
+- cd fixtures && sudo ./start.sh && cd -
 install:
-  - pip install -rtests/requirements.txt
-  - pip install .
-
+- pip install -rtests/requirements.txt
+- pip install .
 script: python setup.py nosetests
-
 after_success: coveralls
+deploy:
+  provider: pypi
+  user: noxiouz
+  password:
+    secure: Fp2tC/SWu+FREKjZzuFflAv1VAsuxqHKlpgUaKgjOICllYNT99yoLYLRFUGziMph88pDy7QoJliRjXqqfGPKCQJ3qwLu/woyQwqcI9I6Ykf99r2YMiS4FK6eEQeMAcCMz6/zl72eLKIsSzz89om+vUCoSDhtdKSOf/9UEI5QEck=
+  on:
+    tags: true
+    repo: noxiouz/docker-registry-driver-elliptics
+    all_branches: true        

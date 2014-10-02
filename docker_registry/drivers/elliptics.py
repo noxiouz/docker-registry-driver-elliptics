@@ -114,7 +114,7 @@ class Storage(driver.Base):
                                          "tuple or string")
 
         try:
-            logger.error("Remotes %s is being added", remotes)
+            logger.info("Remotes %s is being added", remotes)
             self._elliptics_node.add_remotes(remotes)
             logger.info("%s remotes have been added successfully", remotes)
         except Exception as err:
