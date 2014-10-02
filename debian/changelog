@@ -1,3 +1,9 @@
+docker-registry-driver-elliptics (0.1.1.0) unstable; urgency=low
+
+  * Adoption for elliptics=2.26
+
+ -- Anton Tyurin <noxiouz@yandex-team.ru>  Thu, 02 Oct 2014 18:53:52 +0400
+
 docker-registry-driver-elliptics (0.1.0.0) unstable; urgency=low
 
   * Initial release.
