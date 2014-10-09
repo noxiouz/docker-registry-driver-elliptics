@@ -10,7 +10,10 @@
                 "sink": {
                     "type": "files",
                     "path": "/dev/stderr",
-                    "autoflush": true
+                    "autoflush": true,
+                    "rotation": {
+                        "move": 0
+                    }
                 }
             }
         ]
