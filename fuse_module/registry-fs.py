@@ -13,7 +13,7 @@ from fuse import Operations
 import yaml
 
 from docker_registry.drivers.elliptics import Storage
-
+from docker_registry.lib import config
 
 logging.basicConfig()
 log = logging.getLogger("")
@@ -22,13 +22,11 @@ log.setLevel(logging.DEBUG)
 DIRECTORY_CONTENT = "DIRECTORY"
 MAGIC_NUMBER = len(DIRECTORY_CONTENT)
 
-
 class RegistryFS(LoggingMixIn, Operations):
-    def __init__(self, config_path):
-        with open(config_path, 'r') as f:
-            cfg = yaml.load(f)
+    def __init__(self):
+        cfg = config.load()
         try:
-            self.storage = Storage(config=cfg)
+            self.storage = Storage(path=None,config=cfg)
         except Exception as err:
             log.error(err)
             raise FuseOSError(-100)
@@ -78,9 +76,9 @@ class RegistryFS(LoggingMixIn, Operations):
         return self.storage.get_content(path)
 
 
-def main(mountpoint, config_path):
-    FUSE(RegistryFS(config_path),
+def main(mountpoint):
+    FUSE(RegistryFS(),
          mountpoint, foreground=True)
 
 if __name__ == '__main__':
-    main(sys.argv[2], sys.argv[1])
+    main(sys.argv[1])
