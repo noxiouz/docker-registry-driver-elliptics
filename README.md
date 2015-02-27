@@ -26,7 +26,7 @@ You may add any of the following to your main docker-registry configuration to f
 1. `elliptics_net_thread_num`: number of threads in network processing pool
 1. `elliptics_nonblocking_io_thread_num`: number of IO threads in processing pool dedicated to nonblocking ops
 1. `elliptics_groups`: Elliptics groups registry should use
-1. `elliptics_verbosity`: Elliptics logger verbosity (0...4)
+1. `elliptics_verbosity`: Elliptics logger verbosity `info|debug|notice|data|error`
 1. `elliptics_logfile`: path to Elliptics logfile (default: `dev/stderr`)
 
 Example:
