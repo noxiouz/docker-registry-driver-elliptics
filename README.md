@@ -32,21 +32,22 @@ You may add any of the following to your main docker-registry configuration to f
 Example:
 
 ```yaml
-storage: elliptics
-elliptics_nodes: [
-      "elliptics-host1:1025:2",
-      "elliptics-host2:1025:10",
-      ...
-      "host:port:af" ] # or spaceseparated string
-elliptics_wait_timeout: 60
-elliptics_check_timeout: 60
-elliptics_io_thread_num: 2
-elliptics_net_thread_num: 2
-elliptics_nonblocking_io_thread_num: 2
-elliptics_groups: [1, 2, 3]
-elliptics_verbosity: 4
-elliptics_logfile: "/tmp/logfile.log"
-elliptics_loglevel: debug
+elliptics:
+      <<: *common
+      storage: elliptics
+      elliptics_nodes: [
+            "elliptics-host1:1025:2",
+            "elliptics-host2:1025:10",
+            ...
+            "host:port:af" ] # or spaceseparated string
+      elliptics_wait_timeout: 60
+      elliptics_check_timeout: 60
+      elliptics_io_thread_num: 2
+      elliptics_net_thread_num: 2
+      elliptics_nonblocking_io_thread_num: 2
+      elliptics_groups: [1, 2, 3]
+      elliptics_verbosity: "debug"
+      elliptics_logfile: "/tmp/logfile.log"
 ```
 
 ## Developer setup
