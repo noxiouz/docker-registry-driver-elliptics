@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014'
 __credits__ = []
 
 __license__ = 'Apache 2.0'
-__version__ = '0.1.1'
+__version__ = '0.1.3'
 __maintainer__ = 'Anton Tiurin'
 __email__ = 'noxiouz@yandex.ru'
 __status__ = 'Production'
@@ -36,7 +36,7 @@ setuptools.setup(
     description=__description__,
     long_description=open('./README.md').read(),
     download_url=d,
-    classifiers=['Development Status :: 4 - Beta',
+    classifiers=['Development Status :: 5 - Production/Stable',
                  'Intended Audience :: Developers',
                  'Programming Language :: Python',
                  # 'Programming Language :: Python :: 2.6',

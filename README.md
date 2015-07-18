@@ -28,6 +28,7 @@ You may add any of the following to your main docker-registry configuration to f
 1. `elliptics_groups`: Elliptics groups registry should use
 1. `elliptics_verbosity`: Elliptics logger verbosity `info|debug|notice|data|error`
 1. `elliptics_logfile`: path to Elliptics logfile (default: `dev/stderr`)
+1. `elliptics_node_flags`: names of flags for Node
 
 Example:
 
@@ -48,6 +49,7 @@ elliptics:
       elliptics_groups: [1, 2, 3]
       elliptics_verbosity: "debug"
       elliptics_logfile: "/tmp/logfile.log"
+      elliptics_node_flags: ["mix_states", "no_csum"]
 ```
 
 ## Developer setup

@@ -74,6 +74,11 @@ class Storage(driver.Base):
         nblock_iothreads = (config.elliptics_nonblocking_io_thread_num or
                             DEFAULT_NONBLOCKING_IO_THREAD_NUM)
 
+        # Set flags if present
+        if config.elliptics_node_flags:
+            flags = (getattr(elliptics.config_flags, flag) for flag in config.elliptics_node_flags)
+            cfg.config.flags = reduce(lambda x, y: x | y, flags)
+
         cfg.config.nonblocking_io_thread_num = nblock_iothreads
         self.groups = config.elliptics_groups or DEFAULT_GROUPS
 

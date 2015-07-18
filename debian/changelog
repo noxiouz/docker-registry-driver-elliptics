@@ -1,3 +1,9 @@
+docker-registry-driver-elliptics (0.1.2.1) unstable; urgency=low
+
+  * Support flags for Node: see elliptics_node_flags option
+
+ -- Anton Tyurin <noxiouz@yandex-team.ru>  Sat, 18 Jul 2015 13:28:54 +0300
+
 docker-registry-driver-elliptics (0.1.1.0) unstable; urgency=low
 
   * Adoption for elliptics=2.26
