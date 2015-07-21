@@ -49,7 +49,7 @@ elliptics:
       elliptics_groups: [1, 2, 3]
       elliptics_verbosity: "debug"
       elliptics_logfile: "/tmp/logfile.log"
-      elliptics_node_flags: ["mix_states", "no_csum"]
+      elliptics_node_flags: ["mix_stats", "no_csum"]
 ```
 
 ## Developer setup
