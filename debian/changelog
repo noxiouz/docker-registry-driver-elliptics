@@ -1,3 +1,9 @@
+docker-registry-driver-elliptics (0.1.3.1) unstable; urgency=low
+
+  * Various fixes to deal with the indexes
+
+ -- Anton Tyurin <noxiouz@docker01h.ape.yandex.net>  Mon, 26 Oct 2015 14:53:30 +0300
+
 docker-registry-driver-elliptics (0.1.2.1) unstable; urgency=low
 
   * Support flags for Node: see elliptics_node_flags option
