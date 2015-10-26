@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import with_statement
 
+import elliptics
 import logging
 import os
 import stat
@@ -53,16 +54,24 @@ class RegistryFS(LoggingMixIn, Operations):
                         for key in dir(r) if key.startswith("st_"))
 
         path = self.transform_path(path)
-        ares = self.storage._session.lookup(path)
+        session = self.storage._session.clone()
+        session.set_checker(elliptics.checkers.no_check)
+        for group in self.storage.groups:
+            print "lookup %s as group %d", path, group
+            gsession = session.clone()
+            gsession.set_groups([group])
+            ares = gsession.lookup(path)
+            ares.wait()
+            lookup_res = ares.get()
+            if lookup_res: break
         # ugly hack
-        for i in ares.get():
+        for i in lookup_res:
             res = {'st_atime': i.timestamp.tsec,
                    'st_ctime': i.timestamp.tsec,
                    'st_mode': 0o777,  # ugly hack
                    'st_mtime': i.timestamp.tsec,
                    'st_nlink': 1,
                    'st_size': i.size}
-
         if res['st_size'] == MAGIC_NUMBER and\
            self.storage.get_content(path) == DIRECTORY_CONTENT:
             res['st_mode'] |= stat.S_IFDIR
