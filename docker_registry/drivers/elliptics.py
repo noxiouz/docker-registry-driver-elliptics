@@ -169,7 +169,9 @@ class Storage(driver.Base):
             raise exceptions.FileNotFoundError("No such file %s" % key)
 
     def s_read(self, path, offset=0, size=0):
-        r = self._session.read_data(path, offset=offset, size=size)
+        session = self._session.clone()
+        session.set_checker(elliptics.checkers.at_least_one)
+        r = session.read_latest(path, offset=offset, size=size)
         r.wait()
         err = r.error()
         if err.code != 0:
